@@ -1,0 +1,15 @@
+stages:
+  - build
+  - security_scan
+
+build:
+  stage: build
+  script:
+    - docker build -t my-app -f app/Dockerfile app
+
+security_scan:
+  stage: security_scan
+  script:
+    - snyk auth $SNYK_TOKEN
+    - snyk test --docker my-app --file=app/Dockerfile --severity-threshold=high
+  allow_failure: false
